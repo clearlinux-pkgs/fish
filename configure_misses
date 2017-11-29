@@ -1,0 +1,22 @@
+Configure miss: if autoreconf needs to be run
+Configure miss: if autoheader needs to be run
+Configure miss: ncurses/term.h usability
+Configure miss: ncurses/term.h presence
+Configure miss: ncurses/term.h
+Configure miss: ncurses/curses.h usability
+Configure miss: ncurses/curses.h presence
+Configure miss: ncurses/curses.h
+Configure miss: siginfo.h usability
+Configure miss: siginfo.h presence
+Configure miss: siginfo.h
+Configure miss: struct stat.st_ctime_nsec
+Configure miss: struct stat.st_mtimespec.tv_nsec
+Configure miss: wcsndup
+Configure miss: wcslcpy
+Configure miss: std::wcsdup
+Configure miss: std::wcscasecmp
+Configure miss: std::wcsncasecmp
+Configure miss: if ctermid_r() available
+Configure miss: _sys_errs array
+Configure miss: if we are using non varargs tparm.
+Configure miss: pcre2-config
