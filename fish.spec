@@ -4,7 +4,7 @@
 #
 Name     : fish
 Version  : 2.7.0
-Release  : 4
+Release  : 5
 URL      : http://fishshell.com/files/2.7.0/fish-2.7.0.tar.gz
 Source0  : http://fishshell.com/files/2.7.0/fish-2.7.0.tar.gz
 Summary  : fish, the friendly interactive shell
