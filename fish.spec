@@ -6,7 +6,7 @@
 #
 Name     : fish
 Version  : 2.7.0
-Release  : 6
+Release  : 7
 URL      : https://github.com/fish-shell/fish-shell/releases/download/2.7.0/fish-2.7.0.tar.gz
 Source0  : https://github.com/fish-shell/fish-shell/releases/download/2.7.0/fish-2.7.0.tar.gz
 Source99 : https://github.com/fish-shell/fish-shell/releases/download/2.7.0/fish-2.7.0.tar.gz.asc
