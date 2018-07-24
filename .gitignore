@@ -1,5 +1,12 @@
-*.tar.*
-results
-*.log
+.*~
+*~
+*.swp
 .repo-index
-*.log.*
+*.log
+build.log.round*
+*.tar.*
+*.tgz
+!*.tar.*.*
+*.zip
+commitmsg
+results/

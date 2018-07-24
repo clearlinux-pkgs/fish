@@ -5,18 +5,19 @@
 # Source0 file verified with key 0xC0B969B2974E888E (zanchey@gmail.com)
 #
 Name     : fish
-Version  : 2.7.0
-Release  : 7
-URL      : https://github.com/fish-shell/fish-shell/releases/download/2.7.0/fish-2.7.0.tar.gz
-Source0  : https://github.com/fish-shell/fish-shell/releases/download/2.7.0/fish-2.7.0.tar.gz
-Source99 : https://github.com/fish-shell/fish-shell/releases/download/2.7.0/fish-2.7.0.tar.gz.asc
+Version  : 2.7.1
+Release  : 8
+URL      : https://github.com/fish-shell/fish-shell/releases/download/2.7.1/fish-2.7.1.tar.gz
+Source0  : https://github.com/fish-shell/fish-shell/releases/download/2.7.1/fish-2.7.1.tar.gz
+Source99 : https://github.com/fish-shell/fish-shell/releases/download/2.7.1/fish-2.7.1.tar.gz.asc
 Summary  : fish, the friendly interactive shell
 Group    : Development/Tools
 License  : BSD-3-Clause GPL-2.0
 Requires: fish-bin
-Requires: fish-doc
+Requires: fish-license
 Requires: fish-data
 Requires: fish-locales
+Requires: fish-man
 BuildRequires : bzip2-dev
 BuildRequires : doxygen
 BuildRequires : ncurses-dev
@@ -35,6 +36,8 @@ formats from:
 Summary: bin components for the fish package.
 Group: Binaries
 Requires: fish-data
+Requires: fish-license
+Requires: fish-man
 
 %description bin
 bin components for the fish package.
@@ -62,9 +65,18 @@ dev components for the fish package.
 %package doc
 Summary: doc components for the fish package.
 Group: Documentation
+Requires: fish-man
 
 %description doc
 doc components for the fish package.
+
+
+%package license
+Summary: license components for the fish package.
+Group: Default
+
+%description license
+license components for the fish package.
 
 
 %package locales
@@ -75,15 +87,23 @@ Group: Default
 locales components for the fish package.
 
 
+%package man
+Summary: man components for the fish package.
+Group: Default
+
+%description man
+man components for the fish package.
+
+
 %prep
-%setup -q -n fish-2.7.0
+%setup -q -n fish-2.7.1
 
 %build
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C
-export SOURCE_DATE_EPOCH=1526056537
+export SOURCE_DATE_EPOCH=1532462044
 %configure --disable-static
 make  %{?_smp_mflags}
 
@@ -95,8 +115,14 @@ export no_proxy=localhost,127.0.0.1,0.0.0.0
 make check || :
 
 %install
-export SOURCE_DATE_EPOCH=1526056537
+export SOURCE_DATE_EPOCH=1532462044
 rm -rf %{buildroot}
+mkdir -p %{buildroot}/usr/share/doc/fish
+cp COPYING %{buildroot}/usr/share/doc/fish/COPYING
+cp doc_src/license.hdr %{buildroot}/usr/share/doc/fish/doc_src_license.hdr
+cp pcre2-10.22/LICENCE %{buildroot}/usr/share/doc/fish/pcre2-10.22_LICENCE
+cp pcre2-10.22/cmake/COPYING-CMAKE-SCRIPTS %{buildroot}/usr/share/doc/fish/pcre2-10.22_cmake_COPYING-CMAKE-SCRIPTS
+cp user_doc/html/license.html %{buildroot}/usr/share/doc/fish/user_doc_html_license.html
 %make_install
 %find_lang fish
 
@@ -935,11 +961,8 @@ rm -rf %{buildroot}
 /usr/share/fish/man/man1/umask.1
 /usr/share/fish/man/man1/vared.1
 /usr/share/fish/man/man1/while.1
-/usr/share/fish/tools/__pycache__/create_manpage_completions.cpython-36.pyc
-/usr/share/fish/tools/__pycache__/deroff.cpython-36.pyc
 /usr/share/fish/tools/create_manpage_completions.py
 /usr/share/fish/tools/deroff.py
-/usr/share/fish/tools/web_config/__pycache__/webconfig.cpython-36.pyc
 /usr/share/fish/tools/web_config/delete.png
 /usr/share/fish/tools/web_config/favicon.png
 /usr/share/fish/tools/web_config/fishconfig.css
@@ -981,9 +1004,22 @@ rm -rf %{buildroot}
 /usr/lib64/pkgconfig/fish.pc
 
 %files doc
-%defattr(-,root,root,-)
+%defattr(0644,root,root,0755)
 %doc /usr/share/doc/fish/*
-%doc /usr/share/man/man1/*
+
+%files license
+%defattr(-,root,root,-)
+/usr/share/doc/fish/COPYING
+/usr/share/doc/fish/doc_src_license.hdr
+/usr/share/doc/fish/license.html
+/usr/share/doc/fish/pcre2-10.22_cmake_COPYING-CMAKE-SCRIPTS
+/usr/share/doc/fish/user_doc_html_license.html
+
+%files man
+%defattr(-,root,root,-)
+/usr/share/man/man1/fish.1
+/usr/share/man/man1/fish_indent.1
+/usr/share/man/man1/fish_key_reader.1
 
 %files locales -f fish.lang
 %defattr(-,root,root,-)
