@@ -5,12 +5,12 @@
 # Source0 file verified with key 0xC0B969B2974E888E (zanchey@gmail.com)
 #
 Name     : fish
-Version  : 3.0.0
-Release  : 9
-URL      : https://github.com/fish-shell/fish-shell/releases/download/3.0.0/fish-3.0.0.tar.gz
-Source0  : https://github.com/fish-shell/fish-shell/releases/download/3.0.0/fish-3.0.0.tar.gz
-Source99 : https://github.com/fish-shell/fish-shell/releases/download/3.0.0/fish-3.0.0.tar.gz.asc
-Summary  : fish, the friendly interactive shell
+Version  : 3.0.1
+Release  : 10
+URL      : https://github.com/fish-shell/fish-shell/releases/download/3.0.1/fish-3.0.1.tar.gz
+Source0  : https://github.com/fish-shell/fish-shell/releases/download/3.0.1/fish-3.0.1.tar.gz
+Source99 : https://github.com/fish-shell/fish-shell/releases/download/3.0.1/fish-3.0.1.tar.gz.asc
+Summary  : Smart and user friendly shell intended mostly for interactive use
 Group    : Development/Tools
 License  : BSD-3-Clause GPL-2.0
 Requires: fish-bin = %{version}-%{release}
@@ -24,7 +24,6 @@ BuildRequires : ncurses-dev
 BuildRequires : pkgconfig(valgrind)
 BuildRequires : pkgconfig(zlib)
 BuildRequires : sed
-BuildRequires : zlib-dev
 
 %description
 ------------------------------------------------------------------
@@ -96,14 +95,14 @@ man components for the fish package.
 
 
 %prep
-%setup -q -n fish-3.0.0
+%setup -q -n fish-3.0.1
 
 %build
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C
-export SOURCE_DATE_EPOCH=1546013853
+export SOURCE_DATE_EPOCH=1549923931
 %configure --disable-static
 make  %{?_smp_mflags}
 
@@ -115,12 +114,14 @@ export no_proxy=localhost,127.0.0.1,0.0.0.0
 make check || :
 
 %install
-export SOURCE_DATE_EPOCH=1546013853
+export SOURCE_DATE_EPOCH=1549923931
 rm -rf %{buildroot}
 mkdir -p %{buildroot}/usr/share/package-licenses/fish
 cp COPYING %{buildroot}/usr/share/package-licenses/fish/COPYING
+cp doc_src/license.hdr %{buildroot}/usr/share/package-licenses/fish/doc_src_license.hdr
 cp pcre2-10.22/LICENCE %{buildroot}/usr/share/package-licenses/fish/pcre2-10.22_LICENCE
 cp pcre2-10.22/cmake/COPYING-CMAKE-SCRIPTS %{buildroot}/usr/share/package-licenses/fish/pcre2-10.22_cmake_COPYING-CMAKE-SCRIPTS
+cp user_doc/html/license.html %{buildroot}/usr/share/package-licenses/fish/user_doc_html_license.html
 %make_install
 %find_lang fish
 
@@ -1079,8 +1080,10 @@ cp pcre2-10.22/cmake/COPYING-CMAKE-SCRIPTS %{buildroot}/usr/share/package-licens
 %files license
 %defattr(0644,root,root,0755)
 /usr/share/package-licenses/fish/COPYING
+/usr/share/package-licenses/fish/doc_src_license.hdr
 /usr/share/package-licenses/fish/pcre2-10.22_LICENCE
 /usr/share/package-licenses/fish/pcre2-10.22_cmake_COPYING-CMAKE-SCRIPTS
+/usr/share/package-licenses/fish/user_doc_html_license.html
 
 %files man
 %defattr(0644,root,root,0755)
