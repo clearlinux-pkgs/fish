@@ -5,11 +5,11 @@
 # Source0 file verified with key 0xC0B969B2974E888E (zanchey@gmail.com)
 #
 Name     : fish
-Version  : 3.0.1
-Release  : 10
-URL      : https://github.com/fish-shell/fish-shell/releases/download/3.0.1/fish-3.0.1.tar.gz
-Source0  : https://github.com/fish-shell/fish-shell/releases/download/3.0.1/fish-3.0.1.tar.gz
-Source99 : https://github.com/fish-shell/fish-shell/releases/download/3.0.1/fish-3.0.1.tar.gz.asc
+Version  : 3.0.2
+Release  : 11
+URL      : https://github.com/fish-shell/fish-shell/releases/download/3.0.2/fish-3.0.2.tar.gz
+Source0  : https://github.com/fish-shell/fish-shell/releases/download/3.0.2/fish-3.0.2.tar.gz
+Source99 : https://github.com/fish-shell/fish-shell/releases/download/3.0.2/fish-3.0.2.tar.gz.asc
 Summary  : Smart and user friendly shell intended mostly for interactive use
 Group    : Development/Tools
 License  : BSD-3-Clause GPL-2.0
@@ -95,14 +95,14 @@ man components for the fish package.
 
 
 %prep
-%setup -q -n fish-3.0.1
+%setup -q -n fish-3.0.2
 
 %build
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C
-export SOURCE_DATE_EPOCH=1549923931
+export SOURCE_DATE_EPOCH=1550601237
 %configure --disable-static
 make  %{?_smp_mflags}
 
@@ -114,7 +114,7 @@ export no_proxy=localhost,127.0.0.1,0.0.0.0
 make check || :
 
 %install
-export SOURCE_DATE_EPOCH=1549923931
+export SOURCE_DATE_EPOCH=1550601237
 rm -rf %{buildroot}
 mkdir -p %{buildroot}/usr/share/package-licenses/fish
 cp COPYING %{buildroot}/usr/share/package-licenses/fish/COPYING
