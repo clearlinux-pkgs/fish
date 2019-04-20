@@ -6,7 +6,7 @@
 #
 Name     : fish
 Version  : 3.0.2
-Release  : 11
+Release  : 12
 URL      : https://github.com/fish-shell/fish-shell/releases/download/3.0.2/fish-3.0.2.tar.gz
 Source0  : https://github.com/fish-shell/fish-shell/releases/download/3.0.2/fish-3.0.2.tar.gz
 Source99 : https://github.com/fish-shell/fish-shell/releases/download/3.0.2/fish-3.0.2.tar.gz.asc
