@@ -6,11 +6,11 @@
 #
 Name     : fish
 Version  : 3.0.2
-Release  : 12
+Release  : 13
 URL      : https://github.com/fish-shell/fish-shell/releases/download/3.0.2/fish-3.0.2.tar.gz
 Source0  : https://github.com/fish-shell/fish-shell/releases/download/3.0.2/fish-3.0.2.tar.gz
 Source99 : https://github.com/fish-shell/fish-shell/releases/download/3.0.2/fish-3.0.2.tar.gz.asc
-Summary  : Smart and user friendly shell intended mostly for interactive use
+Summary  : fish, the friendly interactive shell
 Group    : Development/Tools
 License  : BSD-3-Clause GPL-2.0
 Requires: fish-bin = %{version}-%{release}
@@ -21,9 +21,12 @@ Requires: fish-man = %{version}-%{release}
 BuildRequires : bzip2-dev
 BuildRequires : doxygen
 BuildRequires : ncurses-dev
+BuildRequires : pcre2
+BuildRequires : pcre2-dev
 BuildRequires : pkgconfig(valgrind)
 BuildRequires : pkgconfig(zlib)
 BuildRequires : sed
+BuildRequires : zlib-dev
 
 %description
 ------------------------------------------------------------------
@@ -36,7 +39,6 @@ Summary: bin components for the fish package.
 Group: Binaries
 Requires: fish-data = %{version}-%{release}
 Requires: fish-license = %{version}-%{release}
-Requires: fish-man = %{version}-%{release}
 
 %description bin
 bin components for the fish package.
@@ -56,6 +58,7 @@ Group: Development
 Requires: fish-bin = %{version}-%{release}
 Requires: fish-data = %{version}-%{release}
 Provides: fish-devel = %{version}-%{release}
+Requires: fish = %{version}-%{release}
 
 %description dev
 dev components for the fish package.
@@ -102,8 +105,9 @@ export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C
-export SOURCE_DATE_EPOCH=1550601237
-%configure --disable-static
+export SOURCE_DATE_EPOCH=1556743171
+export LDFLAGS="${LDFLAGS} -fno-lto"
+%configure --disable-static --without-included-pcre2
 make  %{?_smp_mflags}
 
 %check
@@ -114,7 +118,7 @@ export no_proxy=localhost,127.0.0.1,0.0.0.0
 make check || :
 
 %install
-export SOURCE_DATE_EPOCH=1550601237
+export SOURCE_DATE_EPOCH=1556743171
 rm -rf %{buildroot}
 mkdir -p %{buildroot}/usr/share/package-licenses/fish
 cp COPYING %{buildroot}/usr/share/package-licenses/fish/COPYING

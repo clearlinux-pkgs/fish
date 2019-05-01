@@ -19,4 +19,3 @@ Configure miss: std::wcsncasecmp
 Configure miss: if ctermid_r() available
 Configure miss: _sys_errs array
 Configure miss: if we are using non varargs tparm.
-Configure miss: pcre2-config
