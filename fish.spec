@@ -5,11 +5,11 @@
 # Source0 file verified with key 0xC0B969B2974E888E (zanchey@gmail.com)
 #
 Name     : fish
-Version  : 3.0.2
-Release  : 14
-URL      : https://github.com/fish-shell/fish-shell/releases/download/3.0.2/fish-3.0.2.tar.gz
-Source0  : https://github.com/fish-shell/fish-shell/releases/download/3.0.2/fish-3.0.2.tar.gz
-Source99 : https://github.com/fish-shell/fish-shell/releases/download/3.0.2/fish-3.0.2.tar.gz.asc
+Version  : 3.1.0
+Release  : 15
+URL      : https://github.com/fish-shell/fish-shell/releases/download/3.1.0/fish-3.1.0.tar.gz
+Source0  : https://github.com/fish-shell/fish-shell/releases/download/3.1.0/fish-3.1.0.tar.gz
+Source1  : https://github.com/fish-shell/fish-shell/releases/download/3.1.0/fish-3.1.0.tar.gz.asc
 Summary  : fish, the friendly interactive shell
 Group    : Development/Tools
 License  : BSD-3-Clause GPL-2.0
@@ -18,15 +18,13 @@ Requires: fish-data = %{version}-%{release}
 Requires: fish-license = %{version}-%{release}
 Requires: fish-locales = %{version}-%{release}
 Requires: fish-man = %{version}-%{release}
-BuildRequires : bzip2-dev
-BuildRequires : doxygen
+BuildRequires : buildreq-cmake
+BuildRequires : gettext-dev
+BuildRequires : glibc-dev
 BuildRequires : ncurses-dev
 BuildRequires : pcre2
 BuildRequires : pcre2-dev
 BuildRequires : pkgconfig(valgrind)
-BuildRequires : pkgconfig(zlib)
-BuildRequires : sed
-BuildRequires : zlib-dev
 
 %description
 ------------------------------------------------------------------
@@ -98,36 +96,49 @@ man components for the fish package.
 
 
 %prep
-%setup -q -n fish-3.0.2
+%setup -q -n fish-3.1.0
+cd %{_builddir}/fish-3.1.0
 
 %build
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
-export LANG=C
-export SOURCE_DATE_EPOCH=1556743171
-export LDFLAGS="${LDFLAGS} -fno-lto"
-%configure --disable-static --without-included-pcre2
-make  %{?_smp_mflags}
+export LANG=C.UTF-8
+export SOURCE_DATE_EPOCH=1585849646
+mkdir -p clr-build
+pushd clr-build
+export GCC_IGNORE_WERROR=1
+export CFLAGS="$CFLAGS -fno-lto "
+export FCFLAGS="$CFLAGS -fno-lto "
+export FFLAGS="$CFLAGS -fno-lto "
+export CXXFLAGS="$CXXFLAGS -fno-lto "
+%cmake .. -DCMAKE_INSTALL_SYSCONFDIR=/etc
+make  %{?_smp_mflags}  VERBOSE=1
+popd
 
 %check
-export LANG=C
+export LANG=C.UTF-8
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 make check || :
 
 %install
-export SOURCE_DATE_EPOCH=1556743171
+export SOURCE_DATE_EPOCH=1585849646
 rm -rf %{buildroot}
 mkdir -p %{buildroot}/usr/share/package-licenses/fish
-cp COPYING %{buildroot}/usr/share/package-licenses/fish/COPYING
-cp doc_src/license.hdr %{buildroot}/usr/share/package-licenses/fish/doc_src_license.hdr
-cp pcre2-10.22/LICENCE %{buildroot}/usr/share/package-licenses/fish/pcre2-10.22_LICENCE
-cp pcre2-10.22/cmake/COPYING-CMAKE-SCRIPTS %{buildroot}/usr/share/package-licenses/fish/pcre2-10.22_cmake_COPYING-CMAKE-SCRIPTS
-cp user_doc/html/license.html %{buildroot}/usr/share/package-licenses/fish/user_doc_html_license.html
+cp %{_builddir}/fish-3.1.0/COPYING %{buildroot}/usr/share/package-licenses/fish/fc55c53bedb283451229b86066154c439cd5290f
+cp %{_builddir}/fish-3.1.0/pcre2-10.32/LICENCE %{buildroot}/usr/share/package-licenses/fish/7bfc859266eab20c52c817c627c0782c20263c8e
+cp %{_builddir}/fish-3.1.0/pcre2-10.32/cmake/COPYING-CMAKE-SCRIPTS %{buildroot}/usr/share/package-licenses/fish/ff3ed70db4739b3c6747c7f624fe2bad70802987
+cp %{_builddir}/fish-3.1.0/sphinx_doc_src/license.rst %{buildroot}/usr/share/package-licenses/fish/89ffbd539985a36ab81ba04e95808e15af6f6610
+cp %{_builddir}/fish-3.1.0/user_doc/html/_sources/license.rst.txt %{buildroot}/usr/share/package-licenses/fish/89ffbd539985a36ab81ba04e95808e15af6f6610
+cp %{_builddir}/fish-3.1.0/user_doc/html/license.html %{buildroot}/usr/share/package-licenses/fish/7a31e6ee8d4886ae4a4a5448f9193222564fa3e3
+pushd clr-build
 %make_install
+popd
 %find_lang fish
+## Remove excluded files
+rm -f %{buildroot}/usr/share/doc/fish/.buildinfo
 
 %files
 %defattr(-,root,root,-)
@@ -211,20 +222,25 @@ cp user_doc/html/license.html %{buildroot}/usr/share/package-licenses/fish/user_
 /usr/share/fish/completions/aunpack.fish
 /usr/share/fish/completions/aura.fish
 /usr/share/fish/completions/awk.fish
+/usr/share/fish/completions/aws.fish
 /usr/share/fish/completions/badblocks.fish
 /usr/share/fish/completions/base64.fish
+/usr/share/fish/completions/bat.fish
 /usr/share/fish/completions/bb-wrapper.fish
 /usr/share/fish/completions/bc.fish
 /usr/share/fish/completions/bd.fish
+/usr/share/fish/completions/begin.fish
 /usr/share/fish/completions/bg.fish
 /usr/share/fish/completions/bind.fish
 /usr/share/fish/completions/bison.fish
 /usr/share/fish/completions/block.fish
+/usr/share/fish/completions/bosh.fish
 /usr/share/fish/completions/bower.fish
 /usr/share/fish/completions/break.fish
 /usr/share/fish/completions/brew.fish
 /usr/share/fish/completions/btdownloadcurses.py.fish
 /usr/share/fish/completions/btdownloadheadless.py.fish
+/usr/share/fish/completions/btrfs.fish
 /usr/share/fish/completions/builtin.fish
 /usr/share/fish/completions/bundle.fish
 /usr/share/fish/completions/bunzip2.fish
@@ -237,6 +253,7 @@ cp user_doc/html/license.html %{buildroot}/usr/share/package-licenses/fish/user_
 /usr/share/fish/completions/cabal.fish
 /usr/share/fish/completions/caddy.fish
 /usr/share/fish/completions/caffeinate.fish
+/usr/share/fish/completions/camcontrol.fish
 /usr/share/fish/completions/cancel.fish
 /usr/share/fish/completions/canto.fish
 /usr/share/fish/completions/cargo.fish
@@ -245,13 +262,16 @@ cp user_doc/html/license.html %{buildroot}/usr/share/package-licenses/fish/user_
 /usr/share/fish/completions/cd.fish
 /usr/share/fish/completions/cdh.fish
 /usr/share/fish/completions/cdrecord.fish
+/usr/share/fish/completions/cf.fish
 /usr/share/fish/completions/chgrp.fish
 /usr/share/fish/completions/chmod.fish
 /usr/share/fish/completions/chown.fish
+/usr/share/fish/completions/chronyc.fish
 /usr/share/fish/completions/chsh.fish
 /usr/share/fish/completions/clang++.fish
 /usr/share/fish/completions/clang.fish
 /usr/share/fish/completions/climate.fish
+/usr/share/fish/completions/code.fish
 /usr/share/fish/completions/colordiff.fish
 /usr/share/fish/completions/colorsvn.fish
 /usr/share/fish/completions/combine.fish
@@ -268,10 +288,12 @@ cp user_doc/html/license.html %{buildroot}/usr/share/package-licenses/fish/user_
 /usr/share/fish/completions/connmanctl.fish
 /usr/share/fish/completions/continue.fish
 /usr/share/fish/completions/convert.fish
-/usr/share/fish/completions/cower.fish
 /usr/share/fish/completions/cowsay.fish
 /usr/share/fish/completions/cowthink.fish
 /usr/share/fish/completions/cp.fish
+/usr/share/fish/completions/cryptsetup.fish
+/usr/share/fish/completions/csc.fish
+/usr/share/fish/completions/csi.fish
 /usr/share/fish/completions/cupsaccept.fish
 /usr/share/fish/completions/cupsdisable.fish
 /usr/share/fish/completions/cupsenable.fish
@@ -279,7 +301,10 @@ cp user_doc/html/license.html %{buildroot}/usr/share/package-licenses/fish/user_
 /usr/share/fish/completions/curl.fish
 /usr/share/fish/completions/cut.fish
 /usr/share/fish/completions/cvs.fish
+/usr/share/fish/completions/cwebp.fish
+/usr/share/fish/completions/cygpath.fish
 /usr/share/fish/completions/cygport.fish
+/usr/share/fish/completions/cygstart.fish
 /usr/share/fish/completions/darcs.fish
 /usr/share/fish/completions/date.fish
 /usr/share/fish/completions/dconf.fish
@@ -300,7 +325,6 @@ cp user_doc/html/license.html %{buildroot}/usr/share/package-licenses/fish/user_
 /usr/share/fish/completions/docker.fish
 /usr/share/fish/completions/dpkg-reconfigure.fish
 /usr/share/fish/completions/dpkg.fish
-/usr/share/fish/completions/dropbox.fish
 /usr/share/fish/completions/du.fish
 /usr/share/fish/completions/duply.fish
 /usr/share/fish/completions/dvipdf.fish
@@ -319,6 +343,7 @@ cp user_doc/html/license.html %{buildroot}/usr/share/package-licenses/fish/user_
 /usr/share/fish/completions/entr.fish
 /usr/share/fish/completions/env.fish
 /usr/share/fish/completions/eopkg.fish
+/usr/share/fish/completions/epkginfo.fish
 /usr/share/fish/completions/equery.fish
 /usr/share/fish/completions/eselect.fish
 /usr/share/fish/completions/etex.fish
@@ -331,6 +356,9 @@ cp user_doc/html/license.html %{buildroot}/usr/share/package-licenses/fish/user_
 /usr/share/fish/completions/ezjail-admin.fish
 /usr/share/fish/completions/fab.fish
 /usr/share/fish/completions/feh.fish
+/usr/share/fish/completions/ffmpeg.fish
+/usr/share/fish/completions/ffplay.fish
+/usr/share/fish/completions/ffprobe.fish
 /usr/share/fish/completions/fg.fish
 /usr/share/fish/completions/fgrep.fish
 /usr/share/fish/completions/figlet.fish
@@ -341,7 +369,10 @@ cp user_doc/html/license.html %{buildroot}/usr/share/package-licenses/fish/user_
 /usr/share/fish/completions/flac.fish
 /usr/share/fish/completions/flatpak.fish
 /usr/share/fish/completions/fluxbox-remote.fish
+/usr/share/fish/completions/for.fish
 /usr/share/fish/completions/fossil.fish
+/usr/share/fish/completions/fsharpc.fish
+/usr/share/fish/completions/fsharpi.fish
 /usr/share/fish/completions/ftp.fish
 /usr/share/fish/completions/funced.fish
 /usr/share/fish/completions/funcsave.fish
@@ -349,6 +380,8 @@ cp user_doc/html/license.html %{buildroot}/usr/share/package-licenses/fish/user_
 /usr/share/fish/completions/functions.fish
 /usr/share/fish/completions/fuser.fish
 /usr/share/fish/completions/fusermount.fish
+/usr/share/fish/completions/fzf.fish
+/usr/share/fish/completions/g++.fish
 /usr/share/fish/completions/gcc.fish
 /usr/share/fish/completions/gdb.fish
 /usr/share/fish/completions/gem.fish
@@ -361,6 +394,8 @@ cp user_doc/html/license.html %{buildroot}/usr/share/package-licenses/fish/user_
 /usr/share/fish/completions/gorename.fish
 /usr/share/fish/completions/gpasswd.fish
 /usr/share/fish/completions/gpg.fish
+/usr/share/fish/completions/gpg1.fish
+/usr/share/fish/completions/gpg2.fish
 /usr/share/fish/completions/gphoto2.fish
 /usr/share/fish/completions/gprof.fish
 /usr/share/fish/completions/gradle.fish
@@ -368,6 +403,7 @@ cp user_doc/html/license.html %{buildroot}/usr/share/package-licenses/fish/user_
 /usr/share/fish/completions/groupadd.fish
 /usr/share/fish/completions/grub-file.fish
 /usr/share/fish/completions/grub-install.fish
+/usr/share/fish/completions/grub-mkrescue.fish
 /usr/share/fish/completions/grunt.fish
 /usr/share/fish/completions/gsettings.fish
 /usr/share/fish/completions/gunzip.fish
@@ -383,13 +419,16 @@ cp user_doc/html/license.html %{buildroot}/usr/share/package-licenses/fish/user_
 /usr/share/fish/completions/highlight.fish
 /usr/share/fish/completions/history.fish
 /usr/share/fish/completions/hjson.fish
+/usr/share/fish/completions/hledger.fish
 /usr/share/fish/completions/htop.fish
 /usr/share/fish/completions/hugo.fish
+/usr/share/fish/completions/hwinfo.fish
 /usr/share/fish/completions/i3-msg.fish
 /usr/share/fish/completions/iconv.fish
 /usr/share/fish/completions/id.fish
 /usr/share/fish/completions/identify.fish
 /usr/share/fish/completions/iex.fish
+/usr/share/fish/completions/if.fish
 /usr/share/fish/completions/ifconfig.fish
 /usr/share/fish/completions/ifdata.fish
 /usr/share/fish/completions/ifdown.fish
@@ -399,6 +438,8 @@ cp user_doc/html/license.html %{buildroot}/usr/share/package-licenses/fish/user_
 /usr/share/fish/completions/ip.fish
 /usr/share/fish/completions/ipset.fish
 /usr/share/fish/completions/iptables.fish
+/usr/share/fish/completions/irb.fish
+/usr/share/fish/completions/iw.fish
 /usr/share/fish/completions/j.fish
 /usr/share/fish/completions/jbake.fish
 /usr/share/fish/completions/jest.fish
@@ -406,8 +447,11 @@ cp user_doc/html/license.html %{buildroot}/usr/share/package-licenses/fish/user_
 /usr/share/fish/completions/jobs.fish
 /usr/share/fish/completions/journalctl.fish
 /usr/share/fish/completions/jq.fish
+/usr/share/fish/completions/kak.fish
 /usr/share/fish/completions/kcmshell5.fish
 /usr/share/fish/completions/kdeconnect-cli.fish
+/usr/share/fish/completions/keepassxc-cli.fish
+/usr/share/fish/completions/keybase.fish
 /usr/share/fish/completions/kill.fish
 /usr/share/fish/completions/killall.fish
 /usr/share/fish/completions/kitchen.fish
@@ -425,6 +469,7 @@ cp user_doc/html/license.html %{buildroot}/usr/share/package-licenses/fish/user_
 /usr/share/fish/completions/ln.fish
 /usr/share/fish/completions/localectl.fish
 /usr/share/fish/completions/locate.fish
+/usr/share/fish/completions/loginctl.fish
 /usr/share/fish/completions/logkeys.fish
 /usr/share/fish/completions/lp.fish
 /usr/share/fish/completions/lpadmin.fish
@@ -446,6 +491,9 @@ cp user_doc/html/license.html %{buildroot}/usr/share/package-licenses/fish/user_
 /usr/share/fish/completions/lunchy.fish
 /usr/share/fish/completions/lxc.fish
 /usr/share/fish/completions/lxpanel.fish
+/usr/share/fish/completions/lz4.fish
+/usr/share/fish/completions/lz4c.fish
+/usr/share/fish/completions/lz4cat.fish
 /usr/share/fish/completions/m4.fish
 /usr/share/fish/completions/machinectl.fish
 /usr/share/fish/completions/magento.fish
@@ -454,6 +502,7 @@ cp user_doc/html/license.html %{buildroot}/usr/share/package-licenses/fish/user_
 /usr/share/fish/completions/makensis.fish
 /usr/share/fish/completions/makepkg.fish
 /usr/share/fish/completions/man.fish
+/usr/share/fish/completions/mariner.fish
 /usr/share/fish/completions/math.fish
 /usr/share/fish/completions/mc.fish
 /usr/share/fish/completions/md5sum.fish
@@ -491,10 +540,11 @@ cp user_doc/html/license.html %{buildroot}/usr/share/package-licenses/fish/user_
 /usr/share/fish/completions/mvn.fish
 /usr/share/fish/completions/namei.fish
 /usr/share/fish/completions/native2ascii.fish
+/usr/share/fish/completions/nc.fish
 /usr/share/fish/completions/ncdu.fish
-/usr/share/fish/completions/netcat.fish
 /usr/share/fish/completions/netctl-auto.fish
 /usr/share/fish/completions/netctl.fish
+/usr/share/fish/completions/nethack.fish
 /usr/share/fish/completions/networkctl.fish
 /usr/share/fish/completions/nextd.fish
 /usr/share/fish/completions/ngrok.fish
@@ -525,12 +575,12 @@ cp user_doc/html/license.html %{buildroot}/usr/share/package-licenses/fish/user_
 /usr/share/fish/completions/pacman.fish
 /usr/share/fish/completions/pacmatic.fish
 /usr/share/fish/completions/pacmd.fish
-/usr/share/fish/completions/pacsrv.fish
 /usr/share/fish/completions/pactl.fish
 /usr/share/fish/completions/pactree.fish
 /usr/share/fish/completions/pandoc.fish
 /usr/share/fish/completions/passwd.fish
 /usr/share/fish/completions/patch.fish
+/usr/share/fish/completions/patool.fish
 /usr/share/fish/completions/pbget.fish
 /usr/share/fish/completions/pdfelatex.fish
 /usr/share/fish/completions/pdfetex.fish
@@ -541,6 +591,7 @@ cp user_doc/html/license.html %{buildroot}/usr/share/package-licenses/fish/user_
 /usr/share/fish/completions/pfctl.fish
 /usr/share/fish/completions/pftp.fish
 /usr/share/fish/completions/pgrep.fish
+/usr/share/fish/completions/phpunit.fish
 /usr/share/fish/completions/pine.fish
 /usr/share/fish/completions/ping.fish
 /usr/share/fish/completions/pinky.fish
@@ -559,6 +610,7 @@ cp user_doc/html/license.html %{buildroot}/usr/share/package-licenses/fish/user_
 /usr/share/fish/completions/pkgmk.fish
 /usr/share/fish/completions/pkgrm.fish
 /usr/share/fish/completions/pkill.fish
+/usr/share/fish/completions/plutil.fish
 /usr/share/fish/completions/poff.fish
 /usr/share/fish/completions/pon.fish
 /usr/share/fish/completions/port.fish
@@ -580,13 +632,14 @@ cp user_doc/html/license.html %{buildroot}/usr/share/package-licenses/fish/user_
 /usr/share/fish/completions/python.fish
 /usr/share/fish/completions/python2.fish
 /usr/share/fish/completions/python3.fish
+/usr/share/fish/completions/pzstd.fish
+/usr/share/fish/completions/qubes-gpg-client.fish
 /usr/share/fish/completions/quilt.fish
 /usr/share/fish/completions/random.fish
 /usr/share/fish/completions/ranger.fish
 /usr/share/fish/completions/rbenv.fish
 /usr/share/fish/completions/rc-service.fish
 /usr/share/fish/completions/rc-update.fish
-/usr/share/fish/completions/rc.d.fish
 /usr/share/fish/completions/rcctl.fish
 /usr/share/fish/completions/read.fish
 /usr/share/fish/completions/readlink.fish
@@ -594,8 +647,10 @@ cp user_doc/html/license.html %{buildroot}/usr/share/package-licenses/fish/user_
 /usr/share/fish/completions/reject.fish
 /usr/share/fish/completions/rejmerge.fish
 /usr/share/fish/completions/renice.fish
+/usr/share/fish/completions/resolvectl.fish
 /usr/share/fish/completions/return.fish
 /usr/share/fish/completions/rfkill.fish
+/usr/share/fish/completions/rg.fish
 /usr/share/fish/completions/rgrep.fish
 /usr/share/fish/completions/rm.fish
 /usr/share/fish/completions/rmdir.fish
@@ -606,6 +661,7 @@ cp user_doc/html/license.html %{buildroot}/usr/share/package-licenses/fish/user_
 /usr/share/fish/completions/ruby-build.fish
 /usr/share/fish/completions/ruby.fish
 /usr/share/fish/completions/rustc.fish
+/usr/share/fish/completions/rustup.fish
 /usr/share/fish/completions/s3cmd.fish
 /usr/share/fish/completions/sass-convert.fish
 /usr/share/fish/completions/sass.fish
@@ -625,6 +681,7 @@ cp user_doc/html/license.html %{buildroot}/usr/share/package-licenses/fish/user_
 /usr/share/fish/completions/setfacl.fish
 /usr/share/fish/completions/setsid.fish
 /usr/share/fish/completions/setxkbmap.fish
+/usr/share/fish/completions/sfdx.fish
 /usr/share/fish/completions/sha1sum.fish
 /usr/share/fish/completions/sha224sum.fish
 /usr/share/fish/completions/sha256sum.fish
@@ -633,6 +690,9 @@ cp user_doc/html/license.html %{buildroot}/usr/share/package-licenses/fish/user_
 /usr/share/fish/completions/signify.fish
 /usr/share/fish/completions/snap.fish
 /usr/share/fish/completions/sort.fish
+/usr/share/fish/completions/speedtest-cli.fish
+/usr/share/fish/completions/speedtest.fish
+/usr/share/fish/completions/src.fish
 /usr/share/fish/completions/ssh.fish
 /usr/share/fish/completions/sshfs.fish
 /usr/share/fish/completions/stack.fish
@@ -664,6 +724,7 @@ cp user_doc/html/license.html %{buildroot}/usr/share/package-licenses/fish/user_
 /usr/share/fish/completions/tmutil.fish
 /usr/share/fish/completions/tmux.fish
 /usr/share/fish/completions/tmuxinator.fish
+/usr/share/fish/completions/tokei.fish
 /usr/share/fish/completions/top.fish
 /usr/share/fish/completions/totem.fish
 /usr/share/fish/completions/touch.fish
@@ -672,6 +733,7 @@ cp user_doc/html/license.html %{buildroot}/usr/share/package-licenses/fish/user_
 /usr/share/fish/completions/trap.fish
 /usr/share/fish/completions/travis.fish
 /usr/share/fish/completions/tree.fish
+/usr/share/fish/completions/tsc.fish
 /usr/share/fish/completions/ttx.fish
 /usr/share/fish/completions/type.fish
 /usr/share/fish/completions/udisksctl.fish
@@ -681,8 +743,10 @@ cp user_doc/html/license.html %{buildroot}/usr/share/package-licenses/fish/user_
 /usr/share/fish/completions/uname.fish
 /usr/share/fish/completions/unexpand.fish
 /usr/share/fish/completions/uniq.fish
+/usr/share/fish/completions/unlz4.fish
 /usr/share/fish/completions/unrar.fish
 /usr/share/fish/completions/unzip.fish
+/usr/share/fish/completions/unzstd.fish
 /usr/share/fish/completions/update-eix-remote.fish
 /usr/share/fish/completions/update-eix.fish
 /usr/share/fish/completions/useradd.fish
@@ -690,6 +754,7 @@ cp user_doc/html/license.html %{buildroot}/usr/share/package-licenses/fish/user_
 /usr/share/fish/completions/vagrant.fish
 /usr/share/fish/completions/valgrind.fish
 /usr/share/fish/completions/vared.fish
+/usr/share/fish/completions/vbc.fish
 /usr/share/fish/completions/vi.fish
 /usr/share/fish/completions/vim-addons.fish
 /usr/share/fish/completions/vim.fish
@@ -704,6 +769,7 @@ cp user_doc/html/license.html %{buildroot}/usr/share/package-licenses/fish/user_
 /usr/share/fish/completions/wget.fish
 /usr/share/fish/completions/whatis.fish
 /usr/share/fish/completions/which.fish
+/usr/share/fish/completions/while.fish
 /usr/share/fish/completions/who.fish
 /usr/share/fish/completions/wicd-cli.fish
 /usr/share/fish/completions/wicd-client.fish
@@ -733,22 +799,24 @@ cp user_doc/html/license.html %{buildroot}/usr/share/package-licenses/fish/user_
 /usr/share/fish/completions/zcat.fish
 /usr/share/fish/completions/zfs.fish
 /usr/share/fish/completions/zip.fish
+/usr/share/fish/completions/zpaq.fish
 /usr/share/fish/completions/zpool.fish
+/usr/share/fish/completions/zstd.fish
+/usr/share/fish/completions/zstdcat.fish
+/usr/share/fish/completions/zstdgrep.fish
+/usr/share/fish/completions/zstdless.fish
+/usr/share/fish/completions/zstdmt.fish
 /usr/share/fish/completions/zypper.fish
 /usr/share/fish/config.fish
 /usr/share/fish/functions/N_.fish
 /usr/share/fish/functions/_.fish
 /usr/share/fish/functions/__fish_abbr_old.fish
+/usr/share/fish/functions/__fish_any_arg_in.fish
+/usr/share/fish/functions/__fish_anypython.fish
 /usr/share/fish/functions/__fish_append.fish
-/usr/share/fish/functions/__fish_bind_test1.fish
-/usr/share/fish/functions/__fish_bind_test2.fish
-/usr/share/fish/functions/__fish_can_complete_switches.fish
 /usr/share/fish/functions/__fish_cancel_commandline.fish
 /usr/share/fish/functions/__fish_clang_complete.fish
 /usr/share/fish/functions/__fish_commandline_is_singlequoted.fish
-/usr/share/fish/functions/__fish_commandline_test.fish
-/usr/share/fish/functions/__fish_complete_abook_formats.fish
-/usr/share/fish/functions/__fish_complete_ant_targets.fish
 /usr/share/fish/functions/__fish_complete_atool_archive_contents.fish
 /usr/share/fish/functions/__fish_complete_bittorrent.fish
 /usr/share/fish/functions/__fish_complete_blockdevice.fish
@@ -756,14 +824,16 @@ cp user_doc/html/license.html %{buildroot}/usr/share/package-licenses/fish/user_
 /usr/share/fish/functions/__fish_complete_command.fish
 /usr/share/fish/functions/__fish_complete_convert_options.fish
 /usr/share/fish/functions/__fish_complete_directories.fish
-/usr/share/fish/functions/__fish_complete_file_url.fish
+/usr/share/fish/functions/__fish_complete_external_command.fish
 /usr/share/fish/functions/__fish_complete_ftp.fish
+/usr/share/fish/functions/__fish_complete_gpg.fish
+/usr/share/fish/functions/__fish_complete_gpg_key_id.fish
+/usr/share/fish/functions/__fish_complete_gpg_user_id.fish
 /usr/share/fish/functions/__fish_complete_groups.fish
 /usr/share/fish/functions/__fish_complete_job_pids.fish
 /usr/share/fish/functions/__fish_complete_list.fish
 /usr/share/fish/functions/__fish_complete_lpr.fish
 /usr/share/fish/functions/__fish_complete_lpr_option.fish
-/usr/share/fish/functions/__fish_complete_lsusb.fish
 /usr/share/fish/functions/__fish_complete_man.fish
 /usr/share/fish/functions/__fish_complete_mount_opts.fish
 /usr/share/fish/functions/__fish_complete_path.fish
@@ -771,17 +841,11 @@ cp user_doc/html/license.html %{buildroot}/usr/share/package-licenses/fish/user_
 /usr/share/fish/functions/__fish_complete_pids.fish
 /usr/share/fish/functions/__fish_complete_ppp_peer.fish
 /usr/share/fish/functions/__fish_complete_proc.fish
-/usr/share/fish/functions/__fish_complete_setxkbmap.fish
 /usr/share/fish/functions/__fish_complete_ssh.fish
 /usr/share/fish/functions/__fish_complete_subcommand.fish
-/usr/share/fish/functions/__fish_complete_subcommand_root.fish
 /usr/share/fish/functions/__fish_complete_suffix.fish
-/usr/share/fish/functions/__fish_complete_svn_diff.fish
-/usr/share/fish/functions/__fish_complete_tar.fish
-/usr/share/fish/functions/__fish_complete_unrar.fish
 /usr/share/fish/functions/__fish_complete_user_at_hosts.fish
 /usr/share/fish/functions/__fish_complete_users.fish
-/usr/share/fish/functions/__fish_complete_wvdial_peers.fish
 /usr/share/fish/functions/__fish_complete_zfs_mountpoint_properties.fish
 /usr/share/fish/functions/__fish_complete_zfs_pools.fish
 /usr/share/fish/functions/__fish_complete_zfs_ro_properties.fish
@@ -794,7 +858,6 @@ cp user_doc/html/license.html %{buildroot}/usr/share/package-licenses/fish/user_
 /usr/share/fish/functions/__fish_cursor_konsole.fish
 /usr/share/fish/functions/__fish_cursor_xterm.fish
 /usr/share/fish/functions/__fish_describe_command.fish
-/usr/share/fish/functions/__fish_filter_ant_targets.fish
 /usr/share/fish/functions/__fish_first_token.fish
 /usr/share/fish/functions/__fish_git_prompt.fish
 /usr/share/fish/functions/__fish_gnu_complete.fish
@@ -814,75 +877,57 @@ cp user_doc/html/license.html %{buildroot}/usr/share/package-licenses/fish/user_
 /usr/share/fish/functions/__fish_number_of_cmd_args_wo_opts.fish
 /usr/share/fish/functions/__fish_paginate.fish
 /usr/share/fish/functions/__fish_parent_directories.fish
-/usr/share/fish/functions/__fish_parse_configure.fish
+/usr/share/fish/functions/__fish_pipestatus_with_signal.fish
 /usr/share/fish/functions/__fish_portage_print_available_pkgs.fish
 /usr/share/fish/functions/__fish_portage_print_installed_pkgs.fish
-/usr/share/fish/functions/__fish_portage_print_repository_names.fish
 /usr/share/fish/functions/__fish_portage_print_repository_paths.fish
-/usr/share/fish/functions/__fish_ports_dirs.fish
+/usr/share/fish/functions/__fish_prepend_sudo.fish
 /usr/share/fish/functions/__fish_prev_arg_in.fish
 /usr/share/fish/functions/__fish_print_VBox_vms.fish
-/usr/share/fish/functions/__fish_print_abook_emails.fish
 /usr/share/fish/functions/__fish_print_addresses.fish
-/usr/share/fish/functions/__fish_print_arch_daemons.fish
 /usr/share/fish/functions/__fish_print_cmd_args.fish
 /usr/share/fish/functions/__fish_print_cmd_args_without_options.fish
 /usr/share/fish/functions/__fish_print_commands.fish
 /usr/share/fish/functions/__fish_print_debian_apache_confs.fish
 /usr/share/fish/functions/__fish_print_debian_apache_mods.fish
 /usr/share/fish/functions/__fish_print_debian_apache_sites.fish
-/usr/share/fish/functions/__fish_print_debian_services.fish
 /usr/share/fish/functions/__fish_print_encodings.fish
 /usr/share/fish/functions/__fish_print_filesystems.fish
-/usr/share/fish/functions/__fish_print_function_prototypes.fish
+/usr/share/fish/functions/__fish_print_gpg_algo.fish
 /usr/share/fish/functions/__fish_print_groups.fish
 /usr/share/fish/functions/__fish_print_help.fish
 /usr/share/fish/functions/__fish_print_hostnames.fish
 /usr/share/fish/functions/__fish_print_interfaces.fish
 /usr/share/fish/functions/__fish_print_lpr_options.fish
 /usr/share/fish/functions/__fish_print_lpr_printers.fish
-/usr/share/fish/functions/__fish_print_lsblk_columns.fish
-/usr/share/fish/functions/__fish_print_make_targets.fish
 /usr/share/fish/functions/__fish_print_modules.fish
 /usr/share/fish/functions/__fish_print_mounted.fish
-/usr/share/fish/functions/__fish_print_ninja_targets.fish
-/usr/share/fish/functions/__fish_print_ninja_tools.fish
 /usr/share/fish/functions/__fish_print_packages.fish
 /usr/share/fish/functions/__fish_print_pacman_repos.fish
+/usr/share/fish/functions/__fish_print_pipestatus.fish
 /usr/share/fish/functions/__fish_print_service_names.fish
 /usr/share/fish/functions/__fish_print_svn_rev.fish
 /usr/share/fish/functions/__fish_print_users.fish
 /usr/share/fish/functions/__fish_print_xdg_applications_directories.fish
-/usr/share/fish/functions/__fish_print_xdg_desktop_file_ids.fish
 /usr/share/fish/functions/__fish_print_xdg_mimetypes.fish
-/usr/share/fish/functions/__fish_print_xrandr_modes.fish
-/usr/share/fish/functions/__fish_print_xrandr_outputs.fish
 /usr/share/fish/functions/__fish_print_xwindows.fish
-/usr/share/fish/functions/__fish_print_zfs_bookmarks.fish
-/usr/share/fish/functions/__fish_print_zfs_filesystems.fish
 /usr/share/fish/functions/__fish_print_zfs_snapshots.fish
-/usr/share/fish/functions/__fish_print_zfs_volumes.fish
-/usr/share/fish/functions/__fish_prt_no_subcommand.fish
-/usr/share/fish/functions/__fish_prt_packages.fish
-/usr/share/fish/functions/__fish_prt_ports.fish
-/usr/share/fish/functions/__fish_prt_use_package.fish
-/usr/share/fish/functions/__fish_prt_use_port.fish
 /usr/share/fish/functions/__fish_pwd.fish
 /usr/share/fish/functions/__fish_seen_argument.fish
 /usr/share/fish/functions/__fish_seen_subcommand_from.fish
 /usr/share/fish/functions/__fish_set_locale.fish
-/usr/share/fish/functions/__fish_sgrep.fish
 /usr/share/fish/functions/__fish_shared_key_bindings.fish
 /usr/share/fish/functions/__fish_should_complete_switches.fish
+/usr/share/fish/functions/__fish_status_to_signal.fish
 /usr/share/fish/functions/__fish_svn_prompt.fish
 /usr/share/fish/functions/__fish_systemctl_services.fish
 /usr/share/fish/functions/__fish_systemd_machine_images.fish
 /usr/share/fish/functions/__fish_systemd_machines.fish
-/usr/share/fish/functions/__fish_test_arg.fish
 /usr/share/fish/functions/__fish_toggle_comment_commandline.fish
 /usr/share/fish/functions/__fish_use_subcommand.fish
 /usr/share/fish/functions/__fish_vcs_prompt.fish
 /usr/share/fish/functions/__fish_whatis.fish
+/usr/share/fish/functions/__fish_whatis_current_token.fish
 /usr/share/fish/functions/__terlar_git_prompt.fish
 /usr/share/fish/functions/_fish_systemctl.fish
 /usr/share/fish/functions/_validate_int.fish
@@ -896,7 +941,6 @@ cp user_doc/html/license.html %{buildroot}/usr/share/package-licenses/fish/user_
 /usr/share/fish/functions/dirs.fish
 /usr/share/fish/functions/down-or-search.fish
 /usr/share/fish/functions/edit_command_buffer.fish
-/usr/share/fish/functions/eval.fish
 /usr/share/fish/functions/export.fish
 /usr/share/fish/functions/fish_breakpoint_prompt.fish
 /usr/share/fish/functions/fish_clipboard_copy.fish
@@ -904,20 +948,24 @@ cp user_doc/html/license.html %{buildroot}/usr/share/package-licenses/fish/user_
 /usr/share/fish/functions/fish_config.fish
 /usr/share/fish/functions/fish_default_key_bindings.fish
 /usr/share/fish/functions/fish_default_mode_prompt.fish
-/usr/share/fish/functions/fish_fallback_prompt.fish
+/usr/share/fish/functions/fish_git_prompt.fish
+/usr/share/fish/functions/fish_hg_prompt.fish
 /usr/share/fish/functions/fish_hybrid_key_bindings.fish
 /usr/share/fish/functions/fish_indent.fish
 /usr/share/fish/functions/fish_key_reader.fish
 /usr/share/fish/functions/fish_md5.fish
 /usr/share/fish/functions/fish_mode_prompt.fish
+/usr/share/fish/functions/fish_npm_helper.fish
 /usr/share/fish/functions/fish_opt.fish
+/usr/share/fish/functions/fish_print_git_action.fish
 /usr/share/fish/functions/fish_print_hg_root.fish
 /usr/share/fish/functions/fish_prompt.fish
+/usr/share/fish/functions/fish_svn_prompt.fish
 /usr/share/fish/functions/fish_title.fish
 /usr/share/fish/functions/fish_update_completions.fish
+/usr/share/fish/functions/fish_vcs_prompt.fish
 /usr/share/fish/functions/fish_vi_cursor.fish
 /usr/share/fish/functions/fish_vi_key_bindings.fish
-/usr/share/fish/functions/fish_vi_mode.fish
 /usr/share/fish/functions/funced.fish
 /usr/share/fish/functions/funcsave.fish
 /usr/share/fish/functions/grep.fish
@@ -942,7 +990,6 @@ cp user_doc/html/license.html %{buildroot}/usr/share/package-licenses/fish/user_
 /usr/share/fish/functions/realpath.fish
 /usr/share/fish/functions/seq.fish
 /usr/share/fish/functions/setenv.fish
-/usr/share/fish/functions/string.fish
 /usr/share/fish/functions/suspend.fish
 /usr/share/fish/functions/trap.fish
 /usr/share/fish/functions/type.fish
@@ -983,17 +1030,23 @@ cp user_doc/html/license.html %{buildroot}/usr/share/package-licenses/fish/user_
 /usr/share/fish/man/man1/exit.1
 /usr/share/fish/man/man1/false.1
 /usr/share/fish/man/man1/fg.1
+/usr/share/fish/man/man1/fish-doc.1
+/usr/share/fish/man/man1/fish-faq.1
+/usr/share/fish/man/man1/fish-tutorial.1
 /usr/share/fish/man/man1/fish.1
 /usr/share/fish/man/man1/fish_breakpoint_prompt.1
 /usr/share/fish/man/man1/fish_config.1
+/usr/share/fish/man/man1/fish_git_prompt.1
+/usr/share/fish/man/man1/fish_hg_prompt.1
 /usr/share/fish/man/man1/fish_indent.1
 /usr/share/fish/man/man1/fish_key_reader.1
 /usr/share/fish/man/man1/fish_mode_prompt.1
 /usr/share/fish/man/man1/fish_opt.1
 /usr/share/fish/man/man1/fish_prompt.1
 /usr/share/fish/man/man1/fish_right_prompt.1
+/usr/share/fish/man/man1/fish_svn_prompt.1
 /usr/share/fish/man/man1/fish_update_completions.1
-/usr/share/fish/man/man1/fish_vi_mode.1
+/usr/share/fish/man/man1/fish_vcs_prompt.1
 /usr/share/fish/man/man1/for.1
 /usr/share/fish/man/man1/funced.1
 /usr/share/fish/man/man1/funcsave.1
@@ -1018,16 +1071,31 @@ cp user_doc/html/license.html %{buildroot}/usr/share/package-licenses/fish/user_
 /usr/share/fish/man/man1/pwd.1
 /usr/share/fish/man/man1/random.1
 /usr/share/fish/man/man1/read.1
-/usr/share/fish/man/man1/realpath.1
 /usr/share/fish/man/man1/return.1
 /usr/share/fish/man/man1/set.1
 /usr/share/fish/man/man1/set_color.1
 /usr/share/fish/man/man1/source.1
 /usr/share/fish/man/man1/status.1
+/usr/share/fish/man/man1/string-collect.1
+/usr/share/fish/man/man1/string-escape.1
+/usr/share/fish/man/man1/string-join.1
+/usr/share/fish/man/man1/string-join0.1
+/usr/share/fish/man/man1/string-length.1
+/usr/share/fish/man/man1/string-lower.1
+/usr/share/fish/man/man1/string-match.1
+/usr/share/fish/man/man1/string-repeat.1
+/usr/share/fish/man/man1/string-replace.1
+/usr/share/fish/man/man1/string-split.1
+/usr/share/fish/man/man1/string-split0.1
+/usr/share/fish/man/man1/string-sub.1
+/usr/share/fish/man/man1/string-trim.1
+/usr/share/fish/man/man1/string-unescape.1
+/usr/share/fish/man/man1/string-upper.1
 /usr/share/fish/man/man1/string.1
 /usr/share/fish/man/man1/suspend.1
 /usr/share/fish/man/man1/switch.1
 /usr/share/fish/man/man1/test.1
+/usr/share/fish/man/man1/time.1
 /usr/share/fish/man/man1/trap.1
 /usr/share/fish/man/man1/true.1
 /usr/share/fish/man/man1/type.1
@@ -1083,11 +1151,11 @@ cp user_doc/html/license.html %{buildroot}/usr/share/package-licenses/fish/user_
 
 %files license
 %defattr(0644,root,root,0755)
-/usr/share/package-licenses/fish/COPYING
-/usr/share/package-licenses/fish/doc_src_license.hdr
-/usr/share/package-licenses/fish/pcre2-10.22_LICENCE
-/usr/share/package-licenses/fish/pcre2-10.22_cmake_COPYING-CMAKE-SCRIPTS
-/usr/share/package-licenses/fish/user_doc_html_license.html
+/usr/share/package-licenses/fish/7a31e6ee8d4886ae4a4a5448f9193222564fa3e3
+/usr/share/package-licenses/fish/7bfc859266eab20c52c817c627c0782c20263c8e
+/usr/share/package-licenses/fish/89ffbd539985a36ab81ba04e95808e15af6f6610
+/usr/share/package-licenses/fish/fc55c53bedb283451229b86066154c439cd5290f
+/usr/share/package-licenses/fish/ff3ed70db4739b3c6747c7f624fe2bad70802987
 
 %files man
 %defattr(0644,root,root,0755)
