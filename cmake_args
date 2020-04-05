@@ -1,1 +1,4 @@
 -DCMAKE_INSTALL_SYSCONFDIR=/etc
+-Dextra_completionsdir=/usr/share/fish/vendor_completions.d
+-Dextra_functionsdir=/usr/share/fish/vendor_functions.d
+-Dextra_confdir=/usr/share/fish/vendor_conf.d

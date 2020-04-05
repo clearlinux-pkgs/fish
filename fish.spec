@@ -6,7 +6,7 @@
 #
 Name     : fish
 Version  : 3.1.0
-Release  : 15
+Release  : 16
 URL      : https://github.com/fish-shell/fish-shell/releases/download/3.1.0/fish-3.1.0.tar.gz
 Source0  : https://github.com/fish-shell/fish-shell/releases/download/3.1.0/fish-3.1.0.tar.gz
 Source1  : https://github.com/fish-shell/fish-shell/releases/download/3.1.0/fish-3.1.0.tar.gz.asc
@@ -104,15 +104,18 @@ export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1585849646
+export SOURCE_DATE_EPOCH=1586067913
 mkdir -p clr-build
 pushd clr-build
 export GCC_IGNORE_WERROR=1
 export CFLAGS="$CFLAGS -fno-lto "
-export FCFLAGS="$CFLAGS -fno-lto "
-export FFLAGS="$CFLAGS -fno-lto "
+export FCFLAGS="$FFLAGS -fno-lto "
+export FFLAGS="$FFLAGS -fno-lto "
 export CXXFLAGS="$CXXFLAGS -fno-lto "
-%cmake .. -DCMAKE_INSTALL_SYSCONFDIR=/etc
+%cmake .. -DCMAKE_INSTALL_SYSCONFDIR=/etc \
+-Dextra_completionsdir=/usr/share/fish/vendor_completions.d \
+-Dextra_functionsdir=/usr/share/fish/vendor_functions.d \
+-Dextra_confdir=/usr/share/fish/vendor_conf.d
 make  %{?_smp_mflags}  VERBOSE=1
 popd
 
@@ -124,7 +127,7 @@ export no_proxy=localhost,127.0.0.1,0.0.0.0
 make check || :
 
 %install
-export SOURCE_DATE_EPOCH=1585849646
+export SOURCE_DATE_EPOCH=1586067913
 rm -rf %{buildroot}
 mkdir -p %{buildroot}/usr/share/package-licenses/fish
 cp %{_builddir}/fish-3.1.0/COPYING %{buildroot}/usr/share/package-licenses/fish/fc55c53bedb283451229b86066154c439cd5290f
