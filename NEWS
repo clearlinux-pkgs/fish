@@ -2,6 +2,105 @@ News about PCRE2 releases
 -------------------------
 
 
+Version 10.36 04-December-2020
+------------------------------
+
+Again, mainly bug fixes and tidies. The only enhancements are the addition of
+GNU grep's -m (aka --max-count) option to pcre2grep, and also unifying the
+handling of substitution strings for both -O and callouts in pcre2grep, with
+the addition of $x{...} and $o{...} to allow for characters whose code points
+are greater than 255 in Unicode mode.
+
+NOTE: there is an outstanding issue with JIT support for MacOS on arm64
+hardware. For details, please see Bugzilla issue #2618.
+
+
+Version 10.35 15-April-2020
+---------------------------
+
+Bugfixes, tidies, and a few new enhancements.
+
+1. Capturing groups that contain recursive backreferences to themselves are no
+longer automatically atomic, because the restriction is no longer necessary
+as a result of the 10.30 restructuring.
+
+2. Several new options for pcre2_substitute().
+
+3. When Unicode is supported and PCRE2_UCP is set without PCRE2_UTF, Unicode
+character properties are used for upper/lower case computations on characters
+whose code points are greater than 127.
+
+4. The character tables (for low-valued characters) can now more easily be
+saved and restored in binary.
+
+5. Updated to Unicode 13.0.0.
+
+
+Version 10.34 21-November-2019
+------------------------------
+
+Another release with a few enhancements as well as bugfixes and tidies. The
+main new features are:
+
+1. There is now some support for matching in invalid UTF strings.
+
+2. Non-atomic positive lookarounds are implemented in the pcre2_match()
+interpreter, but not in JIT.
+
+3. Added two new functions: pcre2_get_match_data_size() and
+pcre2_maketables_free().
+
+4. Upgraded to Unicode 12.1.0.
+
+
+Version 10.33 16-April-2019
+---------------------------
+
+Yet more bugfixes, tidies, and a few enhancements, summarized here (see
+ChangeLog for the full list):
+
+1. Callouts from pcre2_substitute() are now available.
+
+2. The POSIX functions are now all called pcre2_regcomp() etc., with wrapper
+functions that use the standard POSIX names. However, in pcre2posix.h the POSIX
+names are defined as macros. This should help avoid linking with the wrong
+library in some environments, while still exporting the POSIX names for
+pre-existing programs that use them.
+
+3. Some new options:
+
+   (a) PCRE2_EXTRA_ESCAPED_CR_IS_LF makes \r behave as \n.
+
+   (b) PCRE2_EXTRA_ALT_BSUX enables support for ECMAScript 6's \u{hh...}
+       construct.
+
+   (c) PCRE2_COPY_MATCHED_SUBJECT causes a copy of a matched subject to be
+       made, instead of just remembering a pointer.
+
+4. Some new Perl features:
+
+   (a) Perl 5.28's experimental alphabetic names for atomic groups and
+       lookaround assertions, for example, (*pla:...) and (*atomic:...).
+
+   (b) The new Perl "script run" features (*script_run:...) and
+       (*atomic_script_run:...) aka (*sr:...) and (*asr:...).
+
+   (c) When PCRE2_UTF is set, allow non-ASCII letters and decimal digits in
+       capture group names.
+
+5. --disable-percent-zt disables the use of %zu and %td in formatting strings
+in pcre2test. They were already automatically disabled for VC and older C
+compilers.
+
+6. Some changes related to callouts in pcre2grep:
+
+   (a) Support for running an external program under VMS has been added, in
+       addition to Windows and fork() support.
+
+   (b) --disable-pcre2grep-callout-fork restricts the callout support in
+       to the inbuilt echo facility.
+
+
 Version 10.32 10-September-2018
 -------------------------------
 
