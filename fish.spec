@@ -5,11 +5,11 @@
 # Source0 file verified with key 0xC0B969B2974E888E (zanchey@gmail.com)
 #
 Name     : fish
-Version  : 3.2.2
-Release  : 24
-URL      : https://github.com/fish-shell/fish-shell/releases/download/3.2.2/fish-3.2.2.tar.xz
-Source0  : https://github.com/fish-shell/fish-shell/releases/download/3.2.2/fish-3.2.2.tar.xz
-Source1  : https://github.com/fish-shell/fish-shell/releases/download/3.2.2/fish-3.2.2.tar.xz.asc
+Version  : 3.3.0
+Release  : 25
+URL      : https://github.com/fish-shell/fish-shell/releases/download/3.3.0/fish-3.3.0.tar.xz
+Source0  : https://github.com/fish-shell/fish-shell/releases/download/3.3.0/fish-3.3.0.tar.xz
+Source1  : https://github.com/fish-shell/fish-shell/releases/download/3.3.0/fish-3.3.0.tar.xz.asc
 Summary  : fish, the friendly interactive shell
 Group    : Development/Tools
 License  : BSD-3-Clause GPL-2.0
@@ -98,15 +98,15 @@ man components for the fish package.
 
 
 %prep
-%setup -q -n fish-3.2.2
-cd %{_builddir}/fish-3.2.2
+%setup -q -n fish-3.3.0
+cd %{_builddir}/fish-3.3.0
 
 %build
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1617818789
+export SOURCE_DATE_EPOCH=1624902912
 mkdir -p clr-build
 pushd clr-build
 export GCC_IGNORE_WERROR=1
@@ -129,13 +129,12 @@ export no_proxy=localhost,127.0.0.1,0.0.0.0
 make check || :
 
 %install
-export SOURCE_DATE_EPOCH=1617818789
+export SOURCE_DATE_EPOCH=1624902912
 rm -rf %{buildroot}
 mkdir -p %{buildroot}/usr/share/package-licenses/fish
-cp %{_builddir}/fish-3.2.2/COPYING %{buildroot}/usr/share/package-licenses/fish/a346b56fc58f4ccad84511f1d8ea3ab864e85182
-cp %{_builddir}/fish-3.2.2/doc_src/license.rst %{buildroot}/usr/share/package-licenses/fish/f31cf119ac7f7c55818fd76b22d11c2952e75dc0
-cp %{_builddir}/fish-3.2.2/pcre2/LICENCE %{buildroot}/usr/share/package-licenses/fish/3bd4456468e9552e27ef44ab7dcb1afa3c63669a
-cp %{_builddir}/fish-3.2.2/pcre2/cmake/COPYING-CMAKE-SCRIPTS %{buildroot}/usr/share/package-licenses/fish/ff3ed70db4739b3c6747c7f624fe2bad70802987
+cp %{_builddir}/fish-3.3.0/doc_src/license.rst %{buildroot}/usr/share/package-licenses/fish/f1cef56189acebf70644fae18e6f214ef7080a50
+cp %{_builddir}/fish-3.3.0/pcre2/LICENCE %{buildroot}/usr/share/package-licenses/fish/3bd4456468e9552e27ef44ab7dcb1afa3c63669a
+cp %{_builddir}/fish-3.3.0/pcre2/cmake/COPYING-CMAKE-SCRIPTS %{buildroot}/usr/share/package-licenses/fish/ff3ed70db4739b3c6747c7f624fe2bad70802987
 pushd clr-build
 %make_install
 popd
@@ -392,8 +391,10 @@ rm -f %{buildroot}/usr/share/doc/fish/.buildinfo
 /usr/share/fish/completions/figlet.fish
 /usr/share/fish/completions/file.fish
 /usr/share/fish/completions/find.fish
+/usr/share/fish/completions/firewall-cmd.fish
 /usr/share/fish/completions/fish.fish
 /usr/share/fish/completions/fish_add_path.fish
+/usr/share/fish/completions/fish_config.fish
 /usr/share/fish/completions/fish_indent.fish
 /usr/share/fish/completions/fish_key_reader.fish
 /usr/share/fish/completions/flac.fish
@@ -504,7 +505,6 @@ rm -f %{buildroot}/usr/share/doc/fish/.buildinfo
 /usr/share/fish/completions/kitty.fish
 /usr/share/fish/completions/kldload.fish
 /usr/share/fish/completions/kldunload.fish
-/usr/share/fish/completions/la.fish
 /usr/share/fish/completions/latex.fish
 /usr/share/fish/completions/latexmk.fish
 /usr/share/fish/completions/launchctl.fish
@@ -513,7 +513,6 @@ rm -f %{buildroot}/usr/share/doc/fish/.buildinfo
 /usr/share/fish/completions/less.fish
 /usr/share/fish/completions/light.fish
 /usr/share/fish/completions/lightdm.fish
-/usr/share/fish/completions/ll.fish
 /usr/share/fish/completions/ln.fish
 /usr/share/fish/completions/localectl.fish
 /usr/share/fish/completions/locate.fish
@@ -796,6 +795,7 @@ rm -f %{buildroot}/usr/share/doc/fish/.buildinfo
 /usr/share/fish/completions/su.fish
 /usr/share/fish/completions/subl.fish
 /usr/share/fish/completions/sudo.fish
+/usr/share/fish/completions/sv.fish
 /usr/share/fish/completions/svn.fish
 /usr/share/fish/completions/sylpheed.fish
 /usr/share/fish/completions/synclient.fish
@@ -1097,6 +1097,8 @@ rm -f %{buildroot}/usr/share/doc/fish/.buildinfo
 /usr/share/fish/functions/fish_clipboard_copy.fish
 /usr/share/fish/functions/fish_clipboard_paste.fish
 /usr/share/fish/functions/fish_command_not_found.fish
+/usr/share/fish/functions/fish_commandline_append.fish
+/usr/share/fish/functions/fish_commandline_prepend.fish
 /usr/share/fish/functions/fish_config.fish
 /usr/share/fish/functions/fish_default_key_bindings.fish
 /usr/share/fish/functions/fish_default_mode_prompt.fish
@@ -1137,6 +1139,7 @@ rm -f %{buildroot}/usr/share/doc/fish/.buildinfo
 /usr/share/fish/functions/prevd-or-backward-word.fish
 /usr/share/fish/functions/prevd.fish
 /usr/share/fish/functions/prompt_hostname.fish
+/usr/share/fish/functions/prompt_login.fish
 /usr/share/fish/functions/prompt_pwd.fish
 /usr/share/fish/functions/psub.fish
 /usr/share/fish/functions/pushd.fish
@@ -1187,6 +1190,8 @@ rm -f %{buildroot}/usr/share/doc/fish/.buildinfo
 /usr/share/fish/man/man1/fish-doc.1
 /usr/share/fish/man/man1/fish-faq.1
 /usr/share/fish/man/man1/fish-for-bash-users.1
+/usr/share/fish/man/man1/fish-interactive.1
+/usr/share/fish/man/man1/fish-language.1
 /usr/share/fish/man/man1/fish-releasenotes.1
 /usr/share/fish/man/man1/fish-tutorial.1
 /usr/share/fish/man/man1/fish.1
@@ -1227,6 +1232,7 @@ rm -f %{buildroot}/usr/share/doc/fish/.buildinfo
 /usr/share/fish/man/man1/popd.1
 /usr/share/fish/man/man1/prevd.1
 /usr/share/fish/man/man1/printf.1
+/usr/share/fish/man/man1/prompt_login.1
 /usr/share/fish/man/man1/prompt_pwd.1
 /usr/share/fish/man/man1/psub.1
 /usr/share/fish/man/man1/pushd.1
@@ -1288,20 +1294,16 @@ rm -f %{buildroot}/usr/share/doc/fish/.buildinfo
 /usr/share/fish/tools/web_config/partials/prompt.html
 /usr/share/fish/tools/web_config/partials/variables.html
 /usr/share/fish/tools/web_config/sample_prompts/acidhub.fish
-/usr/share/fish/tools/web_config/sample_prompts/classic.fish
-/usr/share/fish/tools/web_config/sample_prompts/classic_status.fish
-/usr/share/fish/tools/web_config/sample_prompts/classic_vcs.fish
-/usr/share/fish/tools/web_config/sample_prompts/debian_chroot.fish
+/usr/share/fish/tools/web_config/sample_prompts/arrow.fish
+/usr/share/fish/tools/web_config/sample_prompts/default.fish
+/usr/share/fish/tools/web_config/sample_prompts/disco.fish
 /usr/share/fish/tools/web_config/sample_prompts/informative.fish
 /usr/share/fish/tools/web_config/sample_prompts/informative_vcs.fish
-/usr/share/fish/tools/web_config/sample_prompts/justadollar.fish
-/usr/share/fish/tools/web_config/sample_prompts/lonetwin.fish
 /usr/share/fish/tools/web_config/sample_prompts/minimalist.fish
 /usr/share/fish/tools/web_config/sample_prompts/nim.fish
 /usr/share/fish/tools/web_config/sample_prompts/pythonista.fish
-/usr/share/fish/tools/web_config/sample_prompts/robbyrussell.fish
-/usr/share/fish/tools/web_config/sample_prompts/screen_savvy.fish
-/usr/share/fish/tools/web_config/sample_prompts/sorin.fish
+/usr/share/fish/tools/web_config/sample_prompts/scales.fish
+/usr/share/fish/tools/web_config/sample_prompts/simple.fish
 /usr/share/fish/tools/web_config/sample_prompts/terlar.fish
 /usr/share/fish/tools/web_config/webconfig.py
 /usr/share/pixmaps/fish.png
@@ -1317,8 +1319,7 @@ rm -f %{buildroot}/usr/share/doc/fish/.buildinfo
 %files license
 %defattr(0644,root,root,0755)
 /usr/share/package-licenses/fish/3bd4456468e9552e27ef44ab7dcb1afa3c63669a
-/usr/share/package-licenses/fish/a346b56fc58f4ccad84511f1d8ea3ab864e85182
-/usr/share/package-licenses/fish/f31cf119ac7f7c55818fd76b22d11c2952e75dc0
+/usr/share/package-licenses/fish/f1cef56189acebf70644fae18e6f214ef7080a50
 /usr/share/package-licenses/fish/ff3ed70db4739b3c6747c7f624fe2bad70802987
 
 %files man
