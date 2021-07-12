@@ -5,11 +5,11 @@
 # Source0 file verified with key 0xC0B969B2974E888E (zanchey@gmail.com)
 #
 Name     : fish
-Version  : 3.3.0
-Release  : 25
-URL      : https://github.com/fish-shell/fish-shell/releases/download/3.3.0/fish-3.3.0.tar.xz
-Source0  : https://github.com/fish-shell/fish-shell/releases/download/3.3.0/fish-3.3.0.tar.xz
-Source1  : https://github.com/fish-shell/fish-shell/releases/download/3.3.0/fish-3.3.0.tar.xz.asc
+Version  : 3.3.1
+Release  : 26
+URL      : https://github.com/fish-shell/fish-shell/releases/download/3.3.1/fish-3.3.1.tar.xz
+Source0  : https://github.com/fish-shell/fish-shell/releases/download/3.3.1/fish-3.3.1.tar.xz
+Source1  : https://github.com/fish-shell/fish-shell/releases/download/3.3.1/fish-3.3.1.tar.xz.asc
 Summary  : fish, the friendly interactive shell
 Group    : Development/Tools
 License  : BSD-3-Clause GPL-2.0
@@ -98,15 +98,15 @@ man components for the fish package.
 
 
 %prep
-%setup -q -n fish-3.3.0
-cd %{_builddir}/fish-3.3.0
+%setup -q -n fish-3.3.1
+cd %{_builddir}/fish-3.3.1
 
 %build
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1624902912
+export SOURCE_DATE_EPOCH=1626123262
 mkdir -p clr-build
 pushd clr-build
 export GCC_IGNORE_WERROR=1
@@ -129,12 +129,12 @@ export no_proxy=localhost,127.0.0.1,0.0.0.0
 make check || :
 
 %install
-export SOURCE_DATE_EPOCH=1624902912
+export SOURCE_DATE_EPOCH=1626123262
 rm -rf %{buildroot}
 mkdir -p %{buildroot}/usr/share/package-licenses/fish
-cp %{_builddir}/fish-3.3.0/doc_src/license.rst %{buildroot}/usr/share/package-licenses/fish/f1cef56189acebf70644fae18e6f214ef7080a50
-cp %{_builddir}/fish-3.3.0/pcre2/LICENCE %{buildroot}/usr/share/package-licenses/fish/3bd4456468e9552e27ef44ab7dcb1afa3c63669a
-cp %{_builddir}/fish-3.3.0/pcre2/cmake/COPYING-CMAKE-SCRIPTS %{buildroot}/usr/share/package-licenses/fish/ff3ed70db4739b3c6747c7f624fe2bad70802987
+cp %{_builddir}/fish-3.3.1/doc_src/license.rst %{buildroot}/usr/share/package-licenses/fish/f1cef56189acebf70644fae18e6f214ef7080a50
+cp %{_builddir}/fish-3.3.1/pcre2/LICENCE %{buildroot}/usr/share/package-licenses/fish/3bd4456468e9552e27ef44ab7dcb1afa3c63669a
+cp %{_builddir}/fish-3.3.1/pcre2/cmake/COPYING-CMAKE-SCRIPTS %{buildroot}/usr/share/package-licenses/fish/ff3ed70db4739b3c6747c7f624fe2bad70802987
 pushd clr-build
 %make_install
 popd
