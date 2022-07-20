@@ -6,7 +6,7 @@
 #
 Name     : fish
 Version  : 3.5.1
-Release  : 30
+Release  : 31
 URL      : https://github.com/fish-shell/fish-shell/releases/download/3.5.1/fish-3.5.1.tar.xz
 Source0  : https://github.com/fish-shell/fish-shell/releases/download/3.5.1/fish-3.5.1.tar.xz
 Source1  : https://github.com/fish-shell/fish-shell/releases/download/3.5.1/fish-3.5.1.tar.xz.asc
