@@ -5,11 +5,11 @@
 # Source0 file verified with key 0xC0B969B2974E888E (zanchey@gmail.com)
 #
 Name     : fish
-Version  : 3.5.0
-Release  : 29
-URL      : https://github.com/fish-shell/fish-shell/releases/download/3.5.0/fish-3.5.0.tar.xz
-Source0  : https://github.com/fish-shell/fish-shell/releases/download/3.5.0/fish-3.5.0.tar.xz
-Source1  : https://github.com/fish-shell/fish-shell/releases/download/3.5.0/fish-3.5.0.tar.xz.asc
+Version  : 3.5.1
+Release  : 30
+URL      : https://github.com/fish-shell/fish-shell/releases/download/3.5.1/fish-3.5.1.tar.xz
+Source0  : https://github.com/fish-shell/fish-shell/releases/download/3.5.1/fish-3.5.1.tar.xz
+Source1  : https://github.com/fish-shell/fish-shell/releases/download/3.5.1/fish-3.5.1.tar.xz.asc
 Summary  : fish, the friendly interactive shell
 Group    : Development/Tools
 License  : BSD-3-Clause GPL-2.0
@@ -98,15 +98,15 @@ man components for the fish package.
 
 
 %prep
-%setup -q -n fish-3.5.0
-cd %{_builddir}/fish-3.5.0
+%setup -q -n fish-3.5.1
+cd %{_builddir}/fish-3.5.1
 
 %build
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1655388714
+export SOURCE_DATE_EPOCH=1658342611
 mkdir -p clr-build
 pushd clr-build
 export GCC_IGNORE_WERROR=1
@@ -129,13 +129,13 @@ export no_proxy=localhost,127.0.0.1,0.0.0.0
 make check || :
 
 %install
-export SOURCE_DATE_EPOCH=1655388714
+export SOURCE_DATE_EPOCH=1658342611
 rm -rf %{buildroot}
 mkdir -p %{buildroot}/usr/share/package-licenses/fish
-cp %{_builddir}/fish-3.5.0/COPYING %{buildroot}/usr/share/package-licenses/fish/ed96ee620b04a4d5d407dd3d72e8b44348be8b28
-cp %{_builddir}/fish-3.5.0/doc_src/license.rst %{buildroot}/usr/share/package-licenses/fish/c872df590c48a132c3afdc1790702dafd83fbfea
-cp %{_builddir}/fish-3.5.0/pcre2/LICENCE %{buildroot}/usr/share/package-licenses/fish/3bd4456468e9552e27ef44ab7dcb1afa3c63669a
-cp %{_builddir}/fish-3.5.0/pcre2/cmake/COPYING-CMAKE-SCRIPTS %{buildroot}/usr/share/package-licenses/fish/ff3ed70db4739b3c6747c7f624fe2bad70802987
+cp %{_builddir}/fish-3.5.1/COPYING %{buildroot}/usr/share/package-licenses/fish/ed96ee620b04a4d5d407dd3d72e8b44348be8b28
+cp %{_builddir}/fish-3.5.1/doc_src/license.rst %{buildroot}/usr/share/package-licenses/fish/c872df590c48a132c3afdc1790702dafd83fbfea
+cp %{_builddir}/fish-3.5.1/pcre2/LICENCE %{buildroot}/usr/share/package-licenses/fish/3bd4456468e9552e27ef44ab7dcb1afa3c63669a
+cp %{_builddir}/fish-3.5.1/pcre2/cmake/COPYING-CMAKE-SCRIPTS %{buildroot}/usr/share/package-licenses/fish/ff3ed70db4739b3c6747c7f624fe2bad70802987
 pushd clr-build
 %make_install
 popd
@@ -290,6 +290,7 @@ rm -f %{buildroot}*/usr/share/doc/fish/.buildinfo
 /usr/share/fish/completions/chgrp.fish
 /usr/share/fish/completions/chmod.fish
 /usr/share/fish/completions/choice.fish
+/usr/share/fish/completions/choose.fish
 /usr/share/fish/completions/chown.fish
 /usr/share/fish/completions/chronyc.fish
 /usr/share/fish/completions/chsh.fish
@@ -406,6 +407,7 @@ rm -f %{buildroot}*/usr/share/doc/fish/.buildinfo
 /usr/share/fish/completions/exif.fish
 /usr/share/fish/completions/exit.fish
 /usr/share/fish/completions/expand.fish
+/usr/share/fish/completions/expect.fish
 /usr/share/fish/completions/ezjail-admin.fish
 /usr/share/fish/completions/fab.fish
 /usr/share/fish/completions/fastboot.fish
@@ -644,6 +646,7 @@ rm -f %{buildroot}*/usr/share/doc/fish/.buildinfo
 /usr/share/fish/completions/mysqldump.fish
 /usr/share/fish/completions/namei.fish
 /usr/share/fish/completions/native2ascii.fish
+/usr/share/fish/completions/navi.fish
 /usr/share/fish/completions/nc.fish
 /usr/share/fish/completions/nc.openbsd.fish
 /usr/share/fish/completions/nc.traditional.fish
@@ -760,6 +763,7 @@ rm -f %{buildroot}*/usr/share/doc/fish/.buildinfo
 /usr/share/fish/completions/python2.fish
 /usr/share/fish/completions/python3.fish
 /usr/share/fish/completions/pzstd.fish
+/usr/share/fish/completions/qdbus.fish
 /usr/share/fish/completions/qmk.fish
 /usr/share/fish/completions/qubes-gpg-client.fish
 /usr/share/fish/completions/quilt.fish
@@ -775,6 +779,7 @@ rm -f %{buildroot}*/usr/share/doc/fish/.buildinfo
 /usr/share/fish/completions/read.fish
 /usr/share/fish/completions/readlink.fish
 /usr/share/fish/completions/realpath.fish
+/usr/share/fish/completions/reflector.fish
 /usr/share/fish/completions/reg.fish
 /usr/share/fish/completions/reject.fish
 /usr/share/fish/completions/rejmerge.fish
