@@ -6,7 +6,7 @@
 #
 Name     : fish
 Version  : 3.6.0
-Release  : 32
+Release  : 33
 URL      : https://github.com/fish-shell/fish-shell/releases/download/3.6.0/fish-3.6.0.tar.xz
 Source0  : https://github.com/fish-shell/fish-shell/releases/download/3.6.0/fish-3.6.0.tar.xz
 Source1  : https://github.com/fish-shell/fish-shell/releases/download/3.6.0/fish-3.6.0.tar.xz.asc
@@ -24,9 +24,6 @@ BuildRequires : glibc-dev
 BuildRequires : ncurses-dev
 BuildRequires : pcre2
 BuildRequires : pcre2-dev
-# Suppress stripping binaries
-%define __strip /bin/true
-%define debug_package %{nil}
 
 %description
 .. |Cirrus CI| image:: https://api.cirrus-ci.com/github/fish-shell/fish-shell.svg?branch=master
@@ -105,14 +102,14 @@ export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1673304637
+export SOURCE_DATE_EPOCH=1673305302
 mkdir -p clr-build
 pushd clr-build
 export GCC_IGNORE_WERROR=1
-export CFLAGS="$CFLAGS -fdebug-types-section -femit-struct-debug-baseonly -fno-lto -g1 -gno-column-info -gno-variable-location-views -gz "
-export FCFLAGS="$FFLAGS -fdebug-types-section -femit-struct-debug-baseonly -fno-lto -g1 -gno-column-info -gno-variable-location-views -gz "
-export FFLAGS="$FFLAGS -fdebug-types-section -femit-struct-debug-baseonly -fno-lto -g1 -gno-column-info -gno-variable-location-views -gz "
-export CXXFLAGS="$CXXFLAGS -fdebug-types-section -femit-struct-debug-baseonly -fno-lto -g1 -gno-column-info -gno-variable-location-views -gz "
+export CFLAGS="$CFLAGS -fno-lto "
+export FCFLAGS="$FFLAGS -fno-lto "
+export FFLAGS="$FFLAGS -fno-lto "
+export CXXFLAGS="$CXXFLAGS -fno-lto "
 %cmake .. -DCMAKE_INSTALL_SYSCONFDIR=/etc \
 -Dextra_completionsdir=/usr/share/fish/vendor_completions.d \
 -Dextra_functionsdir=/usr/share/fish/vendor_functions.d \
@@ -128,7 +125,7 @@ export no_proxy=localhost,127.0.0.1,0.0.0.0
 make check || :
 
 %install
-export SOURCE_DATE_EPOCH=1673304637
+export SOURCE_DATE_EPOCH=1673305302
 rm -rf %{buildroot}
 mkdir -p %{buildroot}/usr/share/package-licenses/fish
 cp %{_builddir}/fish-%{version}/COPYING %{buildroot}/usr/share/package-licenses/fish/70588a39782fae3bf0b746a4552263b86a438750 || :
