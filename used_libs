@@ -1,5 +1,5 @@
 libc.so.6
 libm.so.6
+libncursesw.so.6
 libpcre2-32.so.0
 libstdc++.so.6
-libtinfo.so.6
