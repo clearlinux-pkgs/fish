@@ -9,7 +9,7 @@
 #
 Name     : fish
 Version  : 3.6.4
-Release  : 37
+Release  : 38
 URL      : https://github.com/fish-shell/fish-shell/releases/download/3.6.4/fish-3.6.4.tar.xz
 Source0  : https://github.com/fish-shell/fish-shell/releases/download/3.6.4/fish-3.6.4.tar.xz
 Source1  : https://github.com/fish-shell/fish-shell/releases/download/3.6.4/fish-3.6.4.tar.xz.asc
@@ -105,7 +105,7 @@ export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1701823773
+export SOURCE_DATE_EPOCH=1701955510
 mkdir -p clr-build
 pushd clr-build
 export GCC_IGNORE_WERROR=1
@@ -145,11 +145,12 @@ FFLAGS="$CLEAR_INTERMEDIATE_FFLAGS"
 FCFLAGS="$CLEAR_INTERMEDIATE_FCFLAGS"
 ASFLAGS="$CLEAR_INTERMEDIATE_ASFLAGS"
 LDFLAGS="$CLEAR_INTERMEDIATE_LDFLAGS"
-export SOURCE_DATE_EPOCH=1701823773
+export SOURCE_DATE_EPOCH=1701955510
 rm -rf %{buildroot}
 mkdir -p %{buildroot}/usr/share/package-licenses/fish
 cp %{_builddir}/fish-%{version}/COPYING %{buildroot}/usr/share/package-licenses/fish/70588a39782fae3bf0b746a4552263b86a438750 || :
 cp %{_builddir}/fish-%{version}/doc_src/license.rst %{buildroot}/usr/share/package-licenses/fish/a14ad57cc7726bb41f51ea5a32c5e92094ccdf56 || :
+cp %{_builddir}/fish-%{version}/user_doc/html/license.html %{buildroot}/usr/share/package-licenses/fish/93555f869a5a181cd42db83cdbead43bda1bda81 || :
 pushd clr-build
 %make_install
 popd
@@ -1505,6 +1506,7 @@ rm -f %{buildroot}*/usr/share/doc/fish/.buildinfo
 %files license
 %defattr(0644,root,root,0755)
 /usr/share/package-licenses/fish/70588a39782fae3bf0b746a4552263b86a438750
+/usr/share/package-licenses/fish/93555f869a5a181cd42db83cdbead43bda1bda81
 /usr/share/package-licenses/fish/a14ad57cc7726bb41f51ea5a32c5e92094ccdf56
 
 %files man
